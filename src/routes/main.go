@@ -58,6 +58,8 @@ func Router(c *fiber.App) {
 		experience.Get("/data", experiencecontroller.GetAllExperiences)
 		experience.Get("/:id", experiencecontroller.GetExperienceById)
 		experience.Post("/create", experiencecontroller.PostExperience)
+		experience.Post("/post-file", experiencecontroller.FileUpload)
+		experience.Post("/remote", experiencecontroller.RemoteUpload)
 		// experience.Get("/paginated-data", experiencecontroller)
 		experience.Put("/update/:id", experiencecontroller.UpdateExperience)
 		experience.Delete("/delete/:id", experiencecontroller.DeleteExperience)

@@ -2,6 +2,7 @@ package experiencemodel
 
 import (
 	"be_hiring_app/src/config"
+	"mime/multipart"
 	"time"
 
 	"gorm.io/gorm"
@@ -10,12 +11,16 @@ import (
 type Experience struct {
 	gorm.Model
 	Position    string
-	Photo       string
+	Photo       string`json:"url,omitempty" validate:"required"`
 	StartDate   time.Time
 	EndDate     time.Time
 	Description string
 	UserId      uint
 	User        User
+}
+
+type File struct {
+	File multipart.File `json:"file,omitempty" validate:"required"`
 }
 
 type User struct {
