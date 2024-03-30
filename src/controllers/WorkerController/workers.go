@@ -50,7 +50,9 @@ func PostWorker(c *fiber.Ctx) error {
 		item := models.Worker{
 			JobDesc:     Worker.JobDesc,
 			JobType:     Worker.JobType,
+			Skill:       Worker.Skill,
 			CompanyName: Worker.CompanyName,
+			UserId:      Worker.UserId,
 		}
 		models.PostWorker(&item)
 
@@ -75,6 +77,8 @@ func UpdateWorker(c *fiber.Ctx) error {
 			JobDesc:     Worker.JobDesc,
 			JobType:     Worker.JobType,
 			CompanyName: Worker.CompanyName,
+			Skill:       Worker.Skill,
+			UserId:      Worker.UserId,
 		}
 		models.UpdateWorker(id, &newWorker)
 

@@ -11,6 +11,7 @@ type Worker struct {
 	JobDesc     string
 	JobType     string
 	CompanyName string
+	Skill       string
 	UserId      uint
 	User        User
 }

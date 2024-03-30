@@ -6,6 +6,7 @@ import (
 	recruitercontroller "be_hiring_app/src/controllers/RecruiterController"
 	usercontroller "be_hiring_app/src/controllers/UserController"
 	workercontroller "be_hiring_app/src/controllers/WorkerController"
+	skillcontroller "be_hiring_app/src/controllers/SkillController"
 
 	// "github.com/goddtriffin/helmet"
 	"github.com/gofiber/fiber/v2"
@@ -20,9 +21,9 @@ func Router(c *fiber.App) {
 	// v1.Use(helmet)
 	// c.Use(helmet)
 
-	c.Post("/login", usercontroller.Login)
+	v1.Post("/login", usercontroller.Login)
 	v1.Post("/register-worker", usercontroller.RegisterWorker)
-	c.Post("/register-recruiter", usercontroller.RegisterRecruiter)
+	v1.Post("/register-recruiter", usercontroller.RegisterRecruiter)
 
 	user := v1.Group("/user")
 	{
@@ -33,7 +34,7 @@ func Router(c *fiber.App) {
 		user.Delete("/delete/:id", usercontroller.DeleteUser)
 	}
 
-	worker := v1.Group("/worker")
+	worker := v1.Group("user/worker")
 	{
 		worker.Get("/data", workercontroller.GetAllWorkers)
 		worker.Get("/:id", workercontroller.GetWorkerById)
@@ -43,7 +44,7 @@ func Router(c *fiber.App) {
 		worker.Delete("/delete/:id", workercontroller.DeleteWorker)
 	}
 
-	recruiter := v1.Group("/recruiter")
+	recruiter := v1.Group("user/recruiter")
 	{
 		recruiter.Get("/data", recruitercontroller.GetAllRecruiters)
 		recruiter.Get("/:id", recruitercontroller.GetRecruiterById)
@@ -75,4 +76,13 @@ func Router(c *fiber.App) {
 		project.Delete("/delete/:id", projectcontroller.DeleteProject)
 	}
 
+	skill := v1.Group("/skill")
+	{
+		skill.Get("/data", skillcontroller.GetAllSkills)
+		skill.Get("/:id", skillcontroller.GetSkillById)
+		skill.Post("/create", skillcontroller.PostSkill)
+		// skill.Get("/paginated-data", skillcontroller)
+		skill.Put("/update/:id", skillcontroller.UpdateSkill)
+		skill.Delete("/delete/:id", skillcontroller.DeleteSkill)
+	}
 }

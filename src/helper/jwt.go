@@ -6,8 +6,6 @@ import (
 	"github.com/golang-jwt/jwt/v5"
 )
 
-
-
 func GenerateToken(secretKey, email string, role string) (string, error) {
 	// Create a new token
 	token := jwt.New(jwt.SigningMethodHS256)

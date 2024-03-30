@@ -216,7 +216,7 @@ func Login(c *fiber.Ctx) error {
 		}
 
 		jwtKey := os.Getenv("SECRETKEY")
-		token, err := helper.GenerateToken(jwtKey, user.Email, user.Role)
+		token, err := helper.GenerateToken(jwtKey, users.Email, users.Role)
 		if err != nil {
 			return c.Status(fiber.StatusInternalServerError).SendString("Failed To Generate Tokens")
 		}
