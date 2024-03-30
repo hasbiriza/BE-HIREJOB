@@ -1,11 +1,15 @@
 package projectcontroller
 
 import (
+	"be_hiring_app/src/dtos"
 	"be_hiring_app/src/helper"
 	models "be_hiring_app/src/models/ProjectModel"
+	"be_hiring_app/src/services"
 	"encoding/json"
 	"net/http"
+	"path/filepath"
 	"strconv"
+	"strings"
 
 	"github.com/gofiber/fiber/v2"
 )
@@ -41,15 +45,75 @@ func GetProjectById(c *fiber.Ctx) error {
 
 func PostProject(c *fiber.Ctx) error {
 	helper.EnableCors(c)
+	const (
+		AllowedExtensions = ".jpg,.jpeg,.pdf,.png"
+		MaxFileSize       = 2 << 20 // 2 MB
+	)
 	if c.Method() == fiber.MethodPost {
+
 		var Project models.Project
 		if err := c.BodyParser(&Project); err != nil {
 			return c.Status(fiber.StatusBadRequest).SendString(err.Error())
 		}
+		formHeader, err := c.FormFile("file")
+		if err != nil {
+			return c.Status(fiber.StatusInternalServerError).JSON(dtos.MediaDto{
+				StatusCode: fiber.StatusInternalServerError,
+				Message:    "error",
+				Data:       &fiber.Map{"data": "Select a file to upload"},
+			})
+		}
+		formFile, err := formHeader.Open()
+		if err != nil {
+			return c.Status(fiber.StatusInternalServerError).JSON(dtos.MediaDto{
+				StatusCode: fiber.StatusInternalServerError,
+				Message:    "error",
+				Data:       &fiber.Map{"data": err.Error()},
+			})
+		}
+		defer formFile.Close()
+
+		ext := filepath.Ext(formHeader.Filename)
+		ext = strings.ToLower(ext)
+		allowedExts := strings.Split(AllowedExtensions, ",")
+		validExtension := false
+		for _, allowedExt := range allowedExts {
+			if ext == allowedExt {
+				validExtension = true
+				break
+			}
+		}
+		if !validExtension {
+			return c.Status(fiber.StatusBadRequest).JSON(dtos.MediaDto{
+				StatusCode: fiber.StatusBadRequest,
+				Message:    "error",
+				Data:       &fiber.Map{"data": "Invalid file extension"},
+			})
+		}
+
+		// Validate file size
+		fileSize := formHeader.Size
+		if fileSize > MaxFileSize {
+			return c.Status(fiber.StatusBadRequest).JSON(dtos.MediaDto{
+				StatusCode: fiber.StatusBadRequest,
+				Message:    "error",
+				Data:       &fiber.Map{"data": "File size exceeds the allowed limit"},
+			})
+		}
+
+		// Upload the file
+		uploadUrl, err := services.NewMediaUpload().FileUploadProject(models.File{File: formFile})
+		if err != nil {
+			return c.Status(fiber.StatusInternalServerError).JSON(dtos.MediaDto{
+				StatusCode: fiber.StatusInternalServerError,
+				Message:    "error",
+				Data:       &fiber.Map{"data": err.Error()},
+			})
+		}
 
 		item := models.Project{
 			Title:       Project.Title,
-			Photo:       Project.Photo,
+			Photo:       uploadUrl,
 			Repository:  Project.Repository,
 			ProjectType: Project.ProjectType,
 		}

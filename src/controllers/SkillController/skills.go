@@ -1,8 +1,8 @@
-package workercontroller
+package skillcontroller
 
 import (
 	"be_hiring_app/src/helper"
-	models "be_hiring_app/src/models/WorkerModel"
+	models "be_hiring_app/src/models/SkillModel"
 	"encoding/json"
 	"net/http"
 	"strconv"
@@ -10,13 +10,13 @@ import (
 	"github.com/gofiber/fiber/v2"
 )
 
-func GetAllWorkers(c *fiber.Ctx) error {
+func GetAllSkills(c *fiber.Ctx) error {
 	helper.EnableCors(c)
-	worker := models.SelectAllWorker()
+	skill := models.SelectAllSkill()
 
 	response := fiber.Map{
 		"Message": "Success",
-		"data":    worker,
+		"data":    skill,
 	}
 
 	res, err := json.Marshal(response)
@@ -28,72 +28,70 @@ func GetAllWorkers(c *fiber.Ctx) error {
 	return c.Send(res)
 }
 
-func GetWorkerById(c *fiber.Ctx) error {
+func GetSkillById(c *fiber.Ctx) error {
 	helper.EnableCors(c)
 	idParam := c.Params("id")
 	id, _ := strconv.Atoi(idParam)
-	res := models.SelectWorkerById(strconv.Itoa(id))
+	res := models.SelectSkillById(strconv.Itoa(id))
 	return c.JSON(fiber.Map{
 		"Message": "Success",
 		"data":    res,
 	})
 }
 
-func PostWorker(c *fiber.Ctx) error {
+func PostSkill(c *fiber.Ctx) error {
 	helper.EnableCors(c)
 	if c.Method() == fiber.MethodPost {
-		var Worker models.Worker
-		if err := c.BodyParser(&Worker); err != nil {
+		var Skill models.Skill
+		if err := c.BodyParser(&Skill); err != nil {
 			return c.Status(fiber.StatusBadRequest).SendString(err.Error())
 		}
 
-		item := models.Worker{
-			JobDesc:     Worker.JobDesc,
-			JobType:     Worker.JobType,
-			CompanyName: Worker.CompanyName,
+		item := models.Skill{
+			Name:   Skill.Name,
+			UserId: Skill.UserId,
 		}
-		models.PostWorker(&item)
+		models.PostSkill(&item)
 
 		return c.JSON(fiber.Map{
-			"Message": "Worker Posted",
+			"Message": "Skill Posted",
 		})
 	} else {
 		return c.Status(fiber.StatusMethodNotAllowed).SendString("Method tidak diizinkan")
 	}
 }
 
-func UpdateWorker(c *fiber.Ctx) error {
+func UpdateSkill(c *fiber.Ctx) error {
 	helper.EnableCors(c)
 	if c.Method() == fiber.MethodPut {
 		idParam := c.Params("id")
 		id, _ := strconv.Atoi(idParam)
-		var Worker models.Worker
-		if err := c.BodyParser(&Worker); err != nil {
+		var Skill models.Skill
+		if err := c.BodyParser(&Skill); err != nil {
 			return c.Status(fiber.StatusBadRequest).SendString(err.Error())
 		}
-		newWorker := models.Worker{
-			JobDesc:     Worker.JobDesc,
-			JobType:     Worker.JobType,
-			CompanyName: Worker.CompanyName,
+		newSkill := models.Skill{
+			Name:   Skill.Name,
+			UserId: Skill.UserId,
 		}
-		models.UpdateWorker(id, &newWorker)
+		models.UpdateSkill(id, &newSkill)
 
 		return c.JSON(fiber.Map{
-			"Message": "Worker Updated",
+			"Message": "Skill Updated",
 		})
 	} else {
 		return c.Status(fiber.StatusMethodNotAllowed).SendString("Method tidak diizinkan")
 	}
 }
 
-func DeleteWorker(c *fiber.Ctx) error {
+func DeleteSkill(c *fiber.Ctx) error {
 	helper.EnableCors(c)
 	idParam := c.Params("id")
 	id, _ := strconv.Atoi(idParam)
-	models.DeleteWorker(id)
+	models.DeleteSkill(id)
 
 	return c.JSON(fiber.Map{
-		"Message": "Worker Deleted",
+		"Message": "Skill Deleted",
 	})
 
 }

@@ -1,4 +1,4 @@
-package recruitermodel
+package skillmodel
 
 import (
 	"be_hiring_app/src/config"
@@ -6,12 +6,11 @@ import (
 	"gorm.io/gorm"
 )
 
-type Recruiter struct {
+type Skill struct {
 	gorm.Model
-	CompanyName string
-	Position    string
-	UserId      uint
-	User        User
+	Name   string
+	UserId uint
+	User   User
 }
 
 type User struct {
@@ -24,53 +23,54 @@ type User struct {
 	Role        string
 	Description string
 	Instagram   string
+	Github      string
 	Linkedin    string
 }
 
-func SelectAllRecruiter() []*Recruiter {
-	var items []*Recruiter
-	config.DB.Preload("User").Preload("Recipe").Find(&items)
+func SelectAllSkill() []*Skill {
+	var items []*Skill
+	config.DB.Find(&items)
 	return items
 }
 
-func SelectRecruiterById(id string) *Recruiter {
-	var item Recruiter
+func SelectSkillById(id string) *Skill {
+	var item Skill
 	config.DB.First(&item, "id = ?", id)
 	return &item
 }
 
-func PostRecruiter(item *Recruiter) error {
+func PostSkill(item *Skill) error {
 	result := config.DB.Create(&item)
 	return result.Error
 }
 
-func UpdateRecruiter(id int, newRecruiter *Recruiter) error {
-	var item Recruiter
-	result := config.DB.Model(&item).Where("id = ?", id).Updates(newRecruiter)
+func UpdateSkill(id int, newSkill *Skill) error {
+	var item Skill
+	result := config.DB.Model(&item).Where("id = ?", id).Updates(newSkill)
 	return result.Error
 }
 
-func DeleteRecruiter(id int) error {
-	var item Recruiter
+func DeleteSkill(id int) error {
+	var item Skill
 	result := config.DB.Delete(&item, "id = ?", id)
 	return result.Error
 }
 
-func FindData(keyword string) []*Recruiter {
-	var items []*Recruiter
+func FindData(keyword string) []*Skill {
+	var items []*Skill
 	keyword = "%" + keyword + "%"
 	config.DB.Where("CAST(id AS TEXT) LIKE ? OR name LIKE ? OR CAST(day AS TEXT) LIKE ?", keyword, keyword, keyword).Find(&items)
 	return items
 }
 
-func FindCond(sort string, limit int, offset int) []*Recruiter {
-	var items []*Recruiter
+func FindCond(sort string, limit int, offset int) []*Skill {
+	var items []*Skill
 	config.DB.Order(sort).Limit(limit).Offset(offset).Find(&items)
 	return items
 }
 
 func CountData() int64 {
 	var count int64
-	config.DB.Model(&Recruiter{}).Count(&count)
+	config.DB.Model(&Skill{}).Count(&count)
 	return count
 }

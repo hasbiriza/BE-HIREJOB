@@ -7,6 +7,7 @@ import (
 	recruitermodel "be_hiring_app/src/models/RecruiterModel"
 	usermodel "be_hiring_app/src/models/UserModel"
 	workermodel "be_hiring_app/src/models/WorkerModel"
+	skillmodel "be_hiring_app/src/models/SkillModel"
 )
 
 func Migration() {
@@ -15,4 +16,5 @@ func Migration() {
 	config.DB.AutoMigrate(&projectmodel.Project{})
 	config.DB.AutoMigrate(&recruitermodel.Recruiter{})
 	config.DB.AutoMigrate(&experiencemodel.Experience{})
+	config.DB.AutoMigrate(&skillmodel.Skill{})
 }

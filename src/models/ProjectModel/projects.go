@@ -2,18 +2,23 @@ package projectmodel
 
 import (
 	"be_hiring_app/src/config"
+	"mime/multipart"
 
 	"gorm.io/gorm"
 )
 
 type Project struct {
 	gorm.Model
-	Title      string
-	Photo      string
-	Repository string
-	ProjectType  string
-	UserId   uint
-	User     User
+	Title       string
+	Photo       string`json:"url,omitempty" validate:"required"`
+	Repository  string
+	ProjectType string
+	UserId      uint
+	User        User
+}
+
+type File struct {
+	File multipart.File `json:"file,omitempty" validate:"required"`
 }
 
 type User struct {

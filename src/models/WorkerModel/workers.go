@@ -10,7 +10,6 @@ type Worker struct {
 	gorm.Model
 	JobDesc     string
 	JobType     string
-	Skills      string
 	CompanyName string
 	UserId      uint
 	User        User

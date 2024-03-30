@@ -2,6 +2,7 @@ package usermodel
 
 import (
 	"be_hiring_app/src/config"
+	"mime/multipart"
 
 	"gorm.io/gorm"
 )
@@ -13,13 +14,17 @@ type User struct {
 	Password    string
 	PhoneNumber string
 	Address     string
-	Photo       string
+	Photo       string`json:"url,omitempty" validate:"required"`
 	Role        string
 	Description string
 	UserToken   string
 	Instagram   string
 	Github      string
 	Linkedin    string
+}
+
+type File struct {
+	File multipart.File `json:"file,omitempty" validate:"required"`
 }
 
 func SelectAllUser() []*User {
