@@ -10,7 +10,7 @@ import (
 type Experience struct {
 	gorm.Model
 	Position    string
-	Photo       string`json:"url,omitempty" validate:"required"`
+	Photo       string `json:"url,omitempty" validate:"required"`
 	StartDate   string
 	EndDate     string
 	Description string
@@ -68,7 +68,7 @@ func DeleteExperience(id int) error {
 func FindData(keyword string) []*Experience {
 	var items []*Experience
 	keyword = "%" + keyword + "%"
-	config.DB.Where("CAST(id AS TEXT) LIKE ? OR name LIKE ? OR CAST(day AS TEXT) LIKE ?", keyword, keyword, keyword).Find(&items)
+	config.DB.Where("CAST(id AS TEXT) LIKE ? OR position LIKE ? OR photo LIKE ? OR start_date LIKE ? OR end_date LIKE ? OR description LIKE ? OR CAST(user_id AS TEXT) LIKE ?", keyword, keyword, keyword, keyword, keyword, keyword, keyword).Find(&items)
 	return items
 }
 

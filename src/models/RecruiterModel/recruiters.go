@@ -59,7 +59,7 @@ func DeleteRecruiter(id int) error {
 func FindData(keyword string) []*Recruiter {
 	var items []*Recruiter
 	keyword = "%" + keyword + "%"
-	config.DB.Where("CAST(id AS TEXT) LIKE ? OR name LIKE ? OR CAST(day AS TEXT) LIKE ?", keyword, keyword, keyword).Find(&items)
+	config.DB.Where("CAST(id AS TEXT) LIKE ? OR company_name LIKE ? OR CAST(user_id AS TEXT) LIKE ? ", keyword, keyword, keyword).Find(&items)
 	return items
 }
 

@@ -15,7 +15,6 @@ type Worker struct {
 	UserId      uint
 	User        User
 }
-
 type User struct {
 	gorm.Model
 	Name        string
@@ -62,7 +61,7 @@ func DeleteWorker(id int) error {
 func FindData(keyword string) []*Worker {
 	var items []*Worker
 	keyword = "%" + keyword + "%"
-	config.DB.Where("CAST(id AS TEXT) LIKE ? OR name LIKE ? OR CAST(day AS TEXT) LIKE ?", keyword, keyword, keyword).Find(&items)
+	config.DB.Where("CAST(id AS TEXT) LIKE ? OR job_desc LIKE ? OR job_type LIKE ? OR company_name LIKE ? OR skill LIKE ? OR CAST(user_id AS TEXT) LIKE ?", keyword, keyword, keyword,keyword, keyword, keyword).Find(&items)
 	return items
 }
 

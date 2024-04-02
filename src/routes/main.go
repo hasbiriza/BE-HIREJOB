@@ -1,25 +1,20 @@
 package routes
 
 import (
+	"github.com/gofiber/fiber/v2"
 	experiencecontroller "be_hiring_app/src/controllers/ExperienceController"
 	projectcontroller "be_hiring_app/src/controllers/ProjectController"
 	recruitercontroller "be_hiring_app/src/controllers/RecruiterController"
 	usercontroller "be_hiring_app/src/controllers/UserController"
 	workercontroller "be_hiring_app/src/controllers/WorkerController"
 	skillcontroller "be_hiring_app/src/controllers/SkillController"
-
-	// "github.com/goddtriffin/helmet"
-	"github.com/gofiber/fiber/v2"
 )
 
 func Router(c *fiber.App) {
-
-	// helmet := helmet.Default()
+	//helmet
+	// c.Use(helmet.Default())
 
 	v1 := c.Group("/api/v1")
-
-	// v1.Use(helmet)
-	// c.Use(helmet)
 
 	v1.Post("/login", usercontroller.Login)
 	v1.Post("/register-worker", usercontroller.RegisterWorker)

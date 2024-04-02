@@ -10,7 +10,7 @@ import (
 type Project struct {
 	gorm.Model
 	Title       string
-	Photo       string`json:"url,omitempty" validate:"required"`
+	Photo       string `json:"url,omitempty" validate:"required"`
 	Repository  string
 	ProjectType string
 	UserId      uint
@@ -67,7 +67,7 @@ func DeleteProject(id int) error {
 func FindData(keyword string) []*Project {
 	var items []*Project
 	keyword = "%" + keyword + "%"
-	config.DB.Where("CAST(id AS TEXT) LIKE ? OR name LIKE ? OR CAST(day AS TEXT) LIKE ?", keyword, keyword, keyword).Find(&items)
+	config.DB.Where("CAST(id AS TEXT) LIKE ? OR title LIKE ? OR photo LIKE ? OR repository LIKE ? OR project_type LIKE ? OR CAST(user_id AS TEXT) LIKE ?", keyword, keyword, keyword, keyword, keyword, keyword).Find(&items)
 	return items
 }
 

@@ -59,7 +59,7 @@ func DeleteSkill(id int) error {
 func FindData(keyword string) []*Skill {
 	var items []*Skill
 	keyword = "%" + keyword + "%"
-	config.DB.Where("CAST(id AS TEXT) LIKE ? OR name LIKE ? OR CAST(day AS TEXT) LIKE ?", keyword, keyword, keyword).Find(&items)
+	config.DB.Where("CAST(id AS TEXT) LIKE ? OR name LIKE ? OR CAST(user_id AS TEXT) LIKE ?", keyword, keyword, keyword).Find(&items)
 	return items
 }
 
