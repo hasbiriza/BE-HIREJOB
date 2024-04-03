@@ -29,7 +29,7 @@ func Router(c *fiber.App) {
 		user.Delete("/delete/:id", usercontroller.DeleteUser)
 	}
 
-	worker := v1.Group("user/worker")
+	worker := v1.Group("/user/worker")
 	{
 		worker.Get("/data", workercontroller.GetAllWorkers)
 		worker.Get("/:id", workercontroller.GetWorkerById)
@@ -39,7 +39,7 @@ func Router(c *fiber.App) {
 		worker.Delete("/delete/:id", workercontroller.DeleteWorker)
 	}
 
-	recruiter := v1.Group("user/recruiter")
+	recruiter := v1.Group("/user/recruiter")
 	{
 		recruiter.Get("/data", recruitercontroller.GetAllRecruiters)
 		recruiter.Get("/:id", recruitercontroller.GetRecruiterById)
