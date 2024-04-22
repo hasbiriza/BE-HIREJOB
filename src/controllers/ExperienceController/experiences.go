@@ -52,12 +52,12 @@ func PostExperience(c *fiber.Ctx) error {
 		if err := c.BodyParser(&Experience); err != nil {
 			return c.Status(fiber.StatusBadRequest).SendString(err.Error())
 		}
-		formHeader, err := c.FormFile("file")
+		formHeader, err := c.FormFile("photo")
 		if err != nil {
 			return c.Status(fiber.StatusInternalServerError).JSON(dtos.MediaDto{
 				StatusCode: fiber.StatusInternalServerError,
 				Message:    "error",
-				Data:       &fiber.Map{"data": "Select a file to upload"},
+				Data:       &fiber.Map{"data": "Select a photo to upload"},
 			})
 		}
 		formFile, err := formHeader.Open()

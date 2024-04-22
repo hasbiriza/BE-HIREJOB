@@ -14,7 +14,7 @@ type User struct {
 	Password    string
 	PhoneNumber string
 	Address     string
-	Photo       string`json:"url,omitempty" validate:"required"`
+	Photo       string`json:"photo,omitempty" validate:"required"`
 	Role        string
 	Description string
 	UserToken   string
