@@ -1,6 +1,7 @@
 package workercontroller
 
 import (
+	"be_hiring_app/src/config"
 	"be_hiring_app/src/helper"
 	models "be_hiring_app/src/models/WorkerModel"
 	"encoding/json"
@@ -69,27 +70,46 @@ func UpdateWorker(c *fiber.Ctx) error {
 	if c.Method() == fiber.MethodPut {
 		idParam := c.Params("id")
 		id, _ := strconv.Atoi(idParam)
-		var Worker models.Worker
-		if err := c.BodyParser(&Worker); err != nil {
+
+		// Parse the request body to get the updated worker data
+		var updatedWorker models.Worker
+		if err := c.BodyParser(&updatedWorker); err != nil {
 			return c.Status(fiber.StatusBadRequest).SendString(err.Error())
 		}
-		newWorker := models.Worker{
-			JobDesc:     Worker.JobDesc,
-			JobType:     Worker.JobType,
-			CompanyName: Worker.CompanyName,
-			Skill:       Worker.Skill,
-			UserId:      Worker.UserId,
-		}
-		models.UpdateWorker(id, &newWorker)
 
-		return c.JSON(fiber.Map{
-			"Message": "Worker Updated",
-		})
+		// Retrieve the existing worker
+		var existingWorker models.Worker
+		if err := config.DB.Preload("User").First(&existingWorker, id).Error; err != nil {
+			return c.Status(fiber.StatusNotFound).JSON(fiber.Map{"error": "Worker not found"})
+		}
+
+		// Update the worker fields
+		existingWorker.JobDesc = updatedWorker.JobDesc
+		existingWorker.JobType = updatedWorker.JobType
+		existingWorker.CompanyName = updatedWorker.CompanyName
+		existingWorker.Skill = updatedWorker.Skill
+
+		// Update the associated user fields
+		existingWorker.User.Name = updatedWorker.User.Name
+		existingWorker.User.Address = updatedWorker.User.Address
+
+		// Save the changes to both worker and associated user
+		tx := config.DB.Begin()
+		if err := tx.Save(&existingWorker.User).Error; err != nil {
+			tx.Rollback()
+			return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{"error": "Failed to update user"})
+		}
+		if err := tx.Save(&existingWorker).Error; err != nil {
+			tx.Rollback()
+			return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{"error": "Failed to update worker"})
+		}
+		tx.Commit()
+
+		return c.JSON(fiber.Map{"message": "Worker updated successfully"})
 	} else {
-		return c.Status(fiber.StatusMethodNotAllowed).SendString("Method tidak diizinkan")
+		return c.Status(fiber.StatusMethodNotAllowed).SendString("Method not allowed")
 	}
 }
-
 func DeleteWorker(c *fiber.Ctx) error {
 	helper.EnableCors(c)
 	idParam := c.Params("id")

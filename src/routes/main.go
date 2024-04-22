@@ -25,7 +25,7 @@ func Router(c *fiber.App) {
 		user.Get("/data", usercontroller.GetAllUsers)
 		user.Get("/:id", usercontroller.GetUserById)
 		user.Put("/update-worker/:id", usercontroller.UpdateWorker)
-		user.Put("/update-recruiter/:id", usercontroller.UpdateRecruiter)
+		user.Put("	", usercontroller.UpdateRecruiter)
 		user.Delete("/delete/:id", usercontroller.DeleteUser)
 	}
 

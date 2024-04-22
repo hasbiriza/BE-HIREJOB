@@ -52,6 +52,8 @@ func UpdateWorker(id int, newWorker *Worker) error {
 	return result.Error
 }
 
+
+
 func DeleteWorker(id int) error {
 	var item Worker
 	result := config.DB.Delete(&item, "id = ?", id)
