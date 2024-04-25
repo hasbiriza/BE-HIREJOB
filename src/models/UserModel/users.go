@@ -14,7 +14,7 @@ type User struct {
 	Password    string
 	PhoneNumber string
 	Address     string
-	Photo       string`json:"photo,omitempty" validate:"required"`
+	Photo       string `json:"photo,omitempty" validate:"required"`
 	Role        string
 	Description string
 	UserToken   string
@@ -75,11 +75,10 @@ func FindRole(email string) (string, error) {
 func FindData(keyword string) []*User {
 	var items []*User
 	keyword = "%" + keyword + "%"
-	config.DB.Where("CAST(id AS TEXT) LIKE ? OR name LIKE ? OR CAST(day AS TEXT) LIKE ? OR email LIKE ? OR phone_number LIKE ? OR address LIKE ? OR photo LIKE ? OR role LIKE ? OR description LIKE ? OR user_token LIKE ? OR instagram LIKE ? OR github LIKE ? OR linkedin LIKE ?", 
+	config.DB.Where("CAST(id AS TEXT) LIKE ? OR name LIKE ? OR CAST(day AS TEXT) LIKE ? OR email LIKE ? OR phone_number LIKE ? OR address LIKE ? OR photo LIKE ? OR role LIKE ? OR description LIKE ? OR user_token LIKE ? OR instagram LIKE ? OR github LIKE ? OR linkedin LIKE ?",
 		keyword, keyword, keyword, keyword, keyword, keyword, keyword, keyword, keyword, keyword, keyword, keyword, keyword).Find(&items)
 	return items
 }
-
 
 func FindCond(sort string, limit int, offset int) []*User {
 	var items []*User

@@ -44,7 +44,7 @@ func EnvCloudUploadFolder() string {
 }
 
 func InitDB() {
-	url := "postgres://zbyxrwmw:2CMIxTceBYL2LwAZ1u6V5mGRKkSaW3qT@topsy.db.elephantsql.com/zbyxrwmw"
+	url := "postgres://hasby123:hasby123@147.139.210.135:5432/hasby01"
 	// url := os.Getenv("URL")
 	var err error
 	DB, err = gorm.Open(postgres.Open(url), &gorm.Config{})

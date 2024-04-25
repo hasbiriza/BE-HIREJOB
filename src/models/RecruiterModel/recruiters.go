@@ -29,7 +29,7 @@ type User struct {
 
 func SelectAllRecruiter() []*Recruiter {
 	var items []*Recruiter
-	config.DB.Preload("User").Preload("Recipe").Find(&items)
+	config.DB.Preload("User").Find(&items)
 	return items
 }
 

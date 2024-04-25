@@ -37,7 +37,7 @@ type User struct {
 
 func SelectAllProject() []*Project {
 	var items []*Project
-	config.DB.Preload("User").Preload("Recipe").Find(&items)
+	config.DB.Preload("User").Find(&items)
 	return items
 }
 

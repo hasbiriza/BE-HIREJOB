@@ -111,11 +111,13 @@ func PostProject(c *fiber.Ctx) error {
 			})
 		}
 
+		// Create Experience object with uploaded file URL
 		item := models.Project{
 			Title:       Project.Title,
 			Photo:       uploadUrl,
 			Repository:  Project.Repository,
 			ProjectType: Project.ProjectType,
+			UserId:      Project.UserId,
 		}
 		models.PostProject(&item)
 
