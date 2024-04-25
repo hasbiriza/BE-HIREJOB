@@ -9,6 +9,7 @@ import (
 
 type Experience struct {
 	gorm.Model
+	CompanyName string
 	Position    string
 	Photo       string `json:"url,omitempty" validate:"required"`
 	StartDate   string

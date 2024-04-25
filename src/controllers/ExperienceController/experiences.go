@@ -110,6 +110,7 @@ func PostExperience(c *fiber.Ctx) error {
 
 		// Create Experience object with uploaded file URL
 		item := models.Experience{
+			CompanyName: Experience.CompanyName,
 			Position:    Experience.Position,
 			Photo:       uploadUrl,
 			StartDate:   Experience.StartDate,
@@ -138,6 +139,7 @@ func UpdateExperience(c *fiber.Ctx) error {
 			return c.Status(fiber.StatusBadRequest).SendString(err.Error())
 		}
 		newExperience := models.Experience{
+			CompanyName: Experience.CompanyName,
 			Position:    Experience.Position,
 			Photo:       Experience.Photo,
 			StartDate:   Experience.StartDate,
