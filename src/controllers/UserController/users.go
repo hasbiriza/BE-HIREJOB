@@ -15,70 +15,19 @@ import (
 	"golang.org/x/crypto/bcrypt"
 )
 
+const (
+	AllowedExtensions = ".jpg,.jpeg,.pdf,.png"
+	MaxFileSize       = 2 << 20 // 2 MB
+)
+
 func RegisterWorker(c *fiber.Ctx) error {
 	helper.EnableCors(c)
-	const (
-		AllowedExtensions = ".jpg,.jpeg,.pdf,.png"
-		MaxFileSize       = 2 << 20 // 2 MB
-	)
 	if c.Method() == fiber.MethodPost {
 		var user models.User
 		if err := c.BodyParser(&user); err != nil {
 			return c.Status(fiber.StatusBadRequest).SendString(err.Error())
 		}
-		formHeader, err := c.FormFile("photo")
-		if err != nil {
-			return c.Status(fiber.StatusInternalServerError).JSON(dtos.MediaDto{
-				StatusCode: fiber.StatusInternalServerError,
-				Message:    "error",
-				Data:       &fiber.Map{"data": "Select a photo to upload"},
-			})
-		}
-		formFile, err := formHeader.Open()
-		if err != nil {
-			return c.Status(fiber.StatusInternalServerError).JSON(dtos.MediaDto{
-				StatusCode: fiber.StatusInternalServerError,
-				Message:    "error",
-				Data:       &fiber.Map{"data": err.Error()},
-			})
-		}
-		defer formFile.Close()
 
-		ext := filepath.Ext(formHeader.Filename)
-		ext = strings.ToLower(ext)
-		allowedExts := strings.Split(AllowedExtensions, ",")
-		validExtension := false
-		for _, allowedExt := range allowedExts {
-			if ext == allowedExt {
-				validExtension = true
-				break
-			}
-		}
-		if !validExtension {
-			return c.Status(fiber.StatusBadRequest).JSON(dtos.MediaDto{
-				StatusCode: fiber.StatusBadRequest,
-				Message:    "error",
-				Data:       &fiber.Map{"data": "Invalid file extension"},
-			})
-		}
-
-		fileSize := formHeader.Size
-		if fileSize > MaxFileSize {
-			return c.Status(fiber.StatusBadRequest).JSON(dtos.MediaDto{
-				StatusCode: fiber.StatusBadRequest,
-				Message:    "error",
-				Data:       &fiber.Map{"data": "File size exceeds the allowed limit"},
-			})
-		}
-
-		uploadUrl, err := services.NewMediaUpload().FileUploadUser(models.File{File: formFile})
-		if err != nil {
-			return c.Status(fiber.StatusInternalServerError).JSON(dtos.MediaDto{
-				StatusCode: fiber.StatusInternalServerError,
-				Message:    "error",
-				Data:       &fiber.Map{"data": err.Error()},
-			})
-		}
 		hashedPassword, _ := bcrypt.GenerateFromPassword([]byte(user.Password), bcrypt.DefaultCost)
 		Password := string(hashedPassword)
 
@@ -87,7 +36,6 @@ func RegisterWorker(c *fiber.Ctx) error {
 			Email:       user.Email,
 			Password:    Password,
 			PhoneNumber: user.PhoneNumber,
-			Photo:       uploadUrl,
 			Address:     user.Address,
 			Description: user.Description,
 			UserToken:   "-",
@@ -108,69 +56,11 @@ func RegisterWorker(c *fiber.Ctx) error {
 
 func RegisterRecruiter(c *fiber.Ctx) error {
 	helper.EnableCors(c)
-	const (
-		AllowedExtensions = ".jpg,.jpeg,.pdf,.png"
-		MaxFileSize       = 2 << 20 // 2 MB
-	)
 	if c.Method() == fiber.MethodPost {
 		var user models.User
 		if err := c.BodyParser(&user); err != nil {
 			return c.Status(fiber.StatusBadRequest).SendString(err.Error())
 		}
-		formHeader, err := c.FormFile("photo")
-		if err != nil {
-			return c.Status(fiber.StatusInternalServerError).JSON(dtos.MediaDto{
-				StatusCode: fiber.StatusInternalServerError,
-				Message:    "error",
-				Data:       &fiber.Map{"data": "Select a photo to upload"},
-			})
-		}
-		formFile, err := formHeader.Open()
-		if err != nil {
-			return c.Status(fiber.StatusInternalServerError).JSON(dtos.MediaDto{
-				StatusCode: fiber.StatusInternalServerError,
-				Message:    "error",
-				Data:       &fiber.Map{"data": err.Error()},
-			})
-		}
-		defer formFile.Close()
-
-		ext := filepath.Ext(formHeader.Filename)
-		ext = strings.ToLower(ext)
-		allowedExts := strings.Split(AllowedExtensions, ",")
-		validExtension := false
-		for _, allowedExt := range allowedExts {
-			if ext == allowedExt {
-				validExtension = true
-				break
-			}
-		}
-		if !validExtension {
-			return c.Status(fiber.StatusBadRequest).JSON(dtos.MediaDto{
-				StatusCode: fiber.StatusBadRequest,
-				Message:    "error",
-				Data:       &fiber.Map{"data": "Invalid file extension"},
-			})
-		}
-
-		fileSize := formHeader.Size
-		if fileSize > MaxFileSize {
-			return c.Status(fiber.StatusBadRequest).JSON(dtos.MediaDto{
-				StatusCode: fiber.StatusBadRequest,
-				Message:    "error",
-				Data:       &fiber.Map{"data": "File size exceeds the allowed limit"},
-			})
-		}
-
-		uploadUrl, err := services.NewMediaUpload().FileUploadUser(models.File{File: formFile})
-		if err != nil {
-			return c.Status(fiber.StatusInternalServerError).JSON(dtos.MediaDto{
-				StatusCode: fiber.StatusInternalServerError,
-				Message:    "error",
-				Data:       &fiber.Map{"data": err.Error()},
-			})
-		}
-
 		hashedPassword, _ := bcrypt.GenerateFromPassword([]byte(user.Password), bcrypt.DefaultCost)
 		Password := string(hashedPassword)
 
@@ -179,7 +69,6 @@ func RegisterRecruiter(c *fiber.Ctx) error {
 			Email:       user.Email,
 			Password:    Password,
 			PhoneNumber: user.PhoneNumber,
-			Photo:       uploadUrl,
 			Address:     user.Address,
 			Description: user.Description,
 			UserToken:   "-",
@@ -271,6 +160,60 @@ func UpdateWorker(c *fiber.Ctx) error {
 			return c.Status(fiber.StatusBadRequest).SendString(err.Error())
 		}
 
+		formHeader, err := c.FormFile("photo")
+		if err != nil {
+			return c.Status(fiber.StatusInternalServerError).JSON(dtos.MediaDto{
+				StatusCode: fiber.StatusInternalServerError,
+				Message:    "error",
+				Data:       &fiber.Map{"data": "Select a photo to upload"},
+			})
+		}
+		formFile, err := formHeader.Open()
+		if err != nil {
+			return c.Status(fiber.StatusInternalServerError).JSON(dtos.MediaDto{
+				StatusCode: fiber.StatusInternalServerError,
+				Message:    "error",
+				Data:       &fiber.Map{"data": err.Error()},
+			})
+		}
+		defer formFile.Close()
+
+		ext := filepath.Ext(formHeader.Filename)
+		ext = strings.ToLower(ext)
+		allowedExts := strings.Split(AllowedExtensions, ",")
+		validExtension := false
+		for _, allowedExt := range allowedExts {
+			if ext == allowedExt {
+				validExtension = true
+				break
+			}
+		}
+		if !validExtension {
+			return c.Status(fiber.StatusBadRequest).JSON(dtos.MediaDto{
+				StatusCode: fiber.StatusBadRequest,
+				Message:    "error",
+				Data:       &fiber.Map{"data": "Invalid file extension"},
+			})
+		}
+
+		fileSize := formHeader.Size
+		if fileSize > MaxFileSize {
+			return c.Status(fiber.StatusBadRequest).JSON(dtos.MediaDto{
+				StatusCode: fiber.StatusBadRequest,
+				Message:    "error",
+				Data:       &fiber.Map{"data": "File size exceeds the allowed limit"},
+			})
+		}
+
+		uploadUrl, err := services.NewMediaUpload().FileUploadUser(models.File{File: formFile})
+		if err != nil {
+			return c.Status(fiber.StatusInternalServerError).JSON(dtos.MediaDto{
+				StatusCode: fiber.StatusInternalServerError,
+				Message:    "error",
+				Data:       &fiber.Map{"data": err.Error()},
+			})
+		}
+
 		hashedPassword, _ := bcrypt.GenerateFromPassword([]byte(user.Password), bcrypt.DefaultCost)
 		Password := string(hashedPassword)
 
@@ -279,7 +222,7 @@ func UpdateWorker(c *fiber.Ctx) error {
 			Email:       user.Email,
 			Password:    Password,
 			PhoneNumber: user.PhoneNumber,
-			Photo:       user.Photo,
+			Photo:       uploadUrl,
 			Address:     user.Address,
 			Description: user.Description,
 			Instagram:   user.Instagram,
@@ -305,6 +248,59 @@ func UpdateRecruiter(c *fiber.Ctx) error {
 		if err := c.BodyParser(&user); err != nil {
 			return c.Status(fiber.StatusBadRequest).SendString(err.Error())
 		}
+		formHeader, err := c.FormFile("photo")
+		if err != nil {
+			return c.Status(fiber.StatusInternalServerError).JSON(dtos.MediaDto{
+				StatusCode: fiber.StatusInternalServerError,
+				Message:    "error",
+				Data:       &fiber.Map{"data": "Select a photo to upload"},
+			})
+		}
+		formFile, err := formHeader.Open()
+		if err != nil {
+			return c.Status(fiber.StatusInternalServerError).JSON(dtos.MediaDto{
+				StatusCode: fiber.StatusInternalServerError,
+				Message:    "error",
+				Data:       &fiber.Map{"data": err.Error()},
+			})
+		}
+		defer formFile.Close()
+
+		ext := filepath.Ext(formHeader.Filename)
+		ext = strings.ToLower(ext)
+		allowedExts := strings.Split(AllowedExtensions, ",")
+		validExtension := false
+		for _, allowedExt := range allowedExts {
+			if ext == allowedExt {
+				validExtension = true
+				break
+			}
+		}
+		if !validExtension {
+			return c.Status(fiber.StatusBadRequest).JSON(dtos.MediaDto{
+				StatusCode: fiber.StatusBadRequest,
+				Message:    "error",
+				Data:       &fiber.Map{"data": "Invalid file extension"},
+			})
+		}
+
+		fileSize := formHeader.Size
+		if fileSize > MaxFileSize {
+			return c.Status(fiber.StatusBadRequest).JSON(dtos.MediaDto{
+				StatusCode: fiber.StatusBadRequest,
+				Message:    "error",
+				Data:       &fiber.Map{"data": "File size exceeds the allowed limit"},
+			})
+		}
+
+		uploadUrl, err := services.NewMediaUpload().FileUploadUser(models.File{File: formFile})
+		if err != nil {
+			return c.Status(fiber.StatusInternalServerError).JSON(dtos.MediaDto{
+				StatusCode: fiber.StatusInternalServerError,
+				Message:    "error",
+				Data:       &fiber.Map{"data": err.Error()},
+			})
+		}
 
 		hashedPassword, _ := bcrypt.GenerateFromPassword([]byte(user.Password), bcrypt.DefaultCost)
 		Password := string(hashedPassword)
@@ -314,7 +310,7 @@ func UpdateRecruiter(c *fiber.Ctx) error {
 			Email:       user.Email,
 			Password:    Password,
 			PhoneNumber: user.PhoneNumber,
-			Photo:       user.Photo,
+			Photo:       uploadUrl,
 			Address:     user.Address,
 			Description: user.Description,
 			Instagram:   user.Instagram,
