@@ -115,6 +115,7 @@ func Login(c *fiber.Ctx) error {
 			"Email":   user.Email,
 			"Role":    users.Role,
 			"Token":   token,
+			"User_ID": users.ID,
 		}
 		return c.JSON(payload)
 	} else {
