@@ -72,8 +72,7 @@ golangci-lint run
 
 ### Documentation
 
-- [Postman API colletion]()
-- [PostgreSQL database query](./query.sql)
+
 
 API endpoint list are also available as published postman documentation
 
