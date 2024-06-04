@@ -76,7 +76,7 @@ golangci-lint run
 
 API endpoint list are also available as published postman documentation
 
-[![Run in Postman](https://run.pstmn.io/button.svg)](https://documenter.getpostman.com/view/31330000/2sA3QniuZG)
+[![Run in Postman](https://run.pstmn.io/button.svg)](https://documenter.getpostman.com/view/31500374/2sA3Qy69Bh)
 
 ### Related Project
 :rocket: [`Backend Hirejob`](https://github.com/yohansky/BE-Hirejob)
