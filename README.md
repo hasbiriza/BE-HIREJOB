@@ -3,9 +3,16 @@
   <img src="https://github.com/yohansky/BE-Hirejob/assets/69236028/5e71bf99-695c-4663-bdc1-aed6e17534c0" />
   <br />
   <h1>Peworld</h1>
-  <a href="https://github.com/yohansky/Fe-Blanja-React">View Demo</a>
-    .
-    <a href="https://github.com/yohansky/Be-Blanja-fiber">Api Demo</a>
+   <h1>Peworld</h1>
+  <p align="center">
+    <a href="https://github.com/hasbiriza/BE-HIREJOB"><strong>Explore the docs »</strong></a>
+    <br />
+  <a href="https://peworld-hiring-app.vercel.app/">View Demo</a>
+    ||
+     <a href="https://github.com/hasbiriza/FE-HIREJOB">View Front End</a>
+    ||
+    <a href="https://documenter.getpostman.com/view/31500374/2sA3QwcpsG">Api Demo</a>
+  </p>
 </div>
 
   ## Table of Contents
@@ -79,6 +86,6 @@ API endpoint list are also available as published postman documentation
 [![Run in Postman](https://run.pstmn.io/button.svg)](https://documenter.getpostman.com/view/31500374/2sA3Qy69Bh)
 
 ### Related Project
-:rocket: [`Backend Hirejob`](https://github.com/yohansky/BE-Hirejob)
+:rocket: [`Backend Hirejob`](https://github.com/hasbiriza/BE-HIREJOB)
 
-:rocket: [`Frontend Hirejob`](https://github.com/yohansky/Fe-HireJob-Next)
+:rocket: [`Frontend Hirejob`](https://github.com/hasbiriza/FE-HIREJOB)
